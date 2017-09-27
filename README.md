@@ -1,5 +1,6 @@
 # Text Editor
 
+
 ---------------------------------------------------------[ DESCRIPTION ]--
 
 This is a text editor application coded in Java. The editor contains 
