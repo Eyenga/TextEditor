@@ -1,7 +1,7 @@
 # Text Editor
 
-D
----------------------------------------------------------[ DESCRIPTION ]--
+DESCRIPTION 
+-----------------------------------------------------------
 
 This is a text editor application coded in Java. The editor contains 
 various features such as spell check, word completion, and readability 
