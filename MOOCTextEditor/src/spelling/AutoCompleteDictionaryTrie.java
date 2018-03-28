@@ -113,22 +113,27 @@ public class AutoCompleteDictionaryTrie implements Dictionary, AutoComplete
 		TrieNode prefix_node = findNode(root, prefix);
 		if(prefix_node == null) return new LinkedList<String>();
 		
-		List<String> completions = new LinkedList<String>();
-		List<TrieNode> queque = new LinkedList<TrieNode>();		
+		List<String> 	completions = new LinkedList<String>();
+		List<TrieNode> 	node_queque = new LinkedList<TrieNode>();
+		List<String>	word_queque = new LinkedList<String>();
 		
-		queque.add(prefix_node);
+		node_queque.add(prefix_node);
+		word_queque.add(prefix);
 		
-		while(!queque.isEmpty() && completions.size() < numCompletions)
+		while(!node_queque.isEmpty() && completions.size() < numCompletions)
 		{
-			TrieNode curr = queque.remove(0);
+			TrieNode node = node_queque.remove(0);
+			String word = word_queque.remove(0);
 			
-			if(curr.endsWord()) 
-				completions.add(curr.getText());
+			if(node.endsWord()) 
+				completions.add(word);
 			
-			for (char c : curr.getValidNextCharacters())
+			for (char c : node.getValidNextCharacters())
 			{
-				queque.add(curr.getChild(c));
+				node_queque.add(node.getChild(c));
+				word_queque.add(word + c);
 			}
+			
 		}
 		
 		return completions;
@@ -160,21 +165,21 @@ public class AutoCompleteDictionaryTrie implements Dictionary, AutoComplete
 	// For debugging
 	public void printTree()
 	{
-		printNode(root);
+		printNode(root, "");
 	}
 
 	/** Do a pre-order traversal from this node down */
-	public void printNode(TrieNode curr)
+	public void printNode(TrieNode curr, String text)
 	{
 		if (curr == null) return;
 
-		System.out.println(curr.getText());
+		System.out.println(text);
 
 		TrieNode next = null;
 		for (Character c : curr.getValidNextCharacters())
 		{
 			next = curr.getChild(c);
-			printNode(next);
+			printNode(next, text + c);
 		}
 	}
 

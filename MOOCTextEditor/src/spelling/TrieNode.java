@@ -10,22 +10,13 @@ import java.util.Set;
  */
 class TrieNode {
 	private HashMap<Character, TrieNode> children; 
-	private String text;  // Maybe omit for space
 	private boolean isWord;
 	
 	/** Create a new TrieNode */
 	public TrieNode()
 	{
 		children = new HashMap<Character, TrieNode>();
-		text = "";
 		isWord = false;
-	}
-	
-	/** Create a new TrieNode given a text String to store in it */
-	public TrieNode(String text)
-	{
-		this();
-		this.text = text;
 	}
 	
 	/** Return the TrieNode that is the child when you follow the 
@@ -53,15 +44,9 @@ class TrieNode {
 			return null;
 		}
 		
-		TrieNode next = new TrieNode(text + c.toString());
+		TrieNode next = new TrieNode();
 		children.put(c, next);
 		return next;
-	}
-	
-	/** Return the text string at this node */
-    public String getText()
-	{
-		return text;
 	}
 	
     /** Set whether or not this node ends a word in the trie. */
