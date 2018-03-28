@@ -14,7 +14,7 @@ public class DictionaryBenchmarking {
 
 	    // Run each test more than once to get bigger numbers and less noise.
 	    // You can try playing around with this number.
-	    int trials = 500;
+	    int trials = 1500;
 
 	    // The text to test on
 	    String dictFile = "data/dict.txt";
@@ -43,7 +43,7 @@ public class DictionaryBenchmarking {
 			
 			DictionaryLoader.loadDictionary(llDict, dictFile, numToCheck);
 			DictionaryLoader.loadDictionary(bstDict, dictFile, numToCheck);
-			
+
 			long startTime = System.nanoTime();
 			for (int i = 0; i < trials; i++) {
 				llDict.isWord(notInDictionary);

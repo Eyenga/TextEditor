@@ -11,10 +11,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
+ * Implementation of a linked list tester for a linked list implemented WITHOUT
+ * sentinel nodes. 
+ * 
+ * This tester leverages knowledge about how the linked list was
+ * implemented to perform more thorough tests.
+ * 
  * @author UC San Diego MOOC team
  *
  */
-public class MyLinkedListTester
+public class MyLinkedListTesterWhiteBox
 {
 
 	private static final int LONG_LIST_LENGTH = 10;
@@ -149,17 +155,20 @@ public class MyLinkedListTester
 		assertEquals("Remove: check size is correct ", 2, list1.size());
 
 		a = longerList.get(0);
-		next = longerList.get(1);
+		next = longerList.head.next.data;
 		assertEquals("Check removing front element", (Integer) a, longerList.remove(0));
-		assertEquals("Check head after removing front element", (Integer) next, longerList.get(0));
+		assertEquals("Check head after removing front element", (Integer) next, longerList.head.data);
 
-		String b = shortList.get(shortList.size() - 1), prev = shortList.get(shortList.size() - 2);
-		assertEquals("Check removing back element", b, shortList.remove(shortList.size() - 1));
-		assertEquals("Check tail after removing back element", prev, shortList.get(shortList.size() - 1));
+		String b = shortList.get(shortList.size - 1), prev = shortList.tail.prev.data;
+		assertEquals("Check removing back element", b, shortList.remove(shortList.size - 1));
+		assertEquals("Check tail after removing back element", prev, shortList.tail.data);
+		assertEquals("Reduce list to 1 element. Check head and tail point to same node", shortList.head,
+				shortList.tail);
 
 		shortList.remove(0);
 		assertEquals("Check size after removing last element", 0, shortList.size());
-
+		assertEquals("Check head after removing last element", null, shortList.head);
+		assertEquals("Check tail after removing last element", null, shortList.tail);
 	}
 
 	/**
@@ -177,13 +186,14 @@ public class MyLinkedListTester
 		{
 		}
 
-		assertEquals("Check size of empty list", 0, emptyList.size());
+		assertEquals("Check size of empty list", 0, emptyList.size);
 		assertTrue(emptyList.add(15));
-		assertEquals("Check size after appending element to empty list", 1, emptyList.size());
+		assertEquals("Check size after appending element to empty list", 1, emptyList.size);
+		assertEquals("Check last == first element in size 1 list", emptyList.head.data, emptyList.tail.data);
 
 		shortList.add("C");
-		assertEquals("Check size after appending to non-empty list", 3, shortList.size());
-		assertEquals("Check last element after appending to non-empty list", "C", shortList.get(shortList.size() - 1));
+		assertEquals("Check size after appending to non-empty list", 3, shortList.size);
+		assertEquals("Check last element after appending to non-empty list", "C", shortList.get(shortList.size - 1));
 
 	}
 
@@ -244,19 +254,21 @@ public class MyLinkedListTester
 		{
 		}
 
-		
+		emptyList.add(0, 2);
+		assertEquals("Adding to empty list: head and tail should point to same node", emptyList.head, emptyList.tail);
+
 		shortList.add(0, "1");
-		assertEquals("Check after adding to front of non-empty list", "1", shortList.get(0));
+		assertEquals("Check head after adding to front of non-empty list", "1", shortList.head.data);
 
 		list1.add(list1.size(), 4);
-		assertEquals("Check after adding to end of non-empty list", (Integer) 4, list1.get(list1.size() - 1));
+		assertEquals("Check tail after adding to end of non-empty list", (Integer) 4, list1.tail.data);
 
 		int previous = longerList.get(6), next = longerList.get(7);
 		longerList.add(7, 88);
 		assertEquals("Check index after inserting there", (Integer) 88, longerList.get(7));
 		assertEquals("Check prececessor of previous index", (Integer) previous, longerList.get(7 - 1));
 		assertEquals("Check successor of previous index", (Integer) next, longerList.get(7 + 1));
-		assertEquals("Check size after inserting", LONG_LIST_LENGTH + 1, longerList.size());
+		assertEquals("Check size after inserting", LONG_LIST_LENGTH + 1, longerList.size);
 	}
 
 	/** Test setting an element in the list */
@@ -288,10 +300,10 @@ public class MyLinkedListTester
 		}
 
 		shortList.set(0, "1");
-		assertEquals("Check setting front element", "1", shortList.get(0));
+		assertEquals("Check setting front element", "1", shortList.head.data);
 
-		list1.set(list1.size() - 1, 88);
-		assertEquals("Check setting back element", (Integer) 88, list1.get(list1.size() - 1));
+		list1.set(list1.size - 1, 88);
+		assertEquals("Check setting back element", (Integer) 88, list1.tail.data);
 
 		longerList.set(5, 3843);
 		int prev = longerList.get(3);

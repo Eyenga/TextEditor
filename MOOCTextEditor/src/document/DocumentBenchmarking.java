@@ -51,7 +51,7 @@ public class DocumentBenchmarking
 				test.getFleschScore();
 			}
 
-			basic_time = (System.nanoTime() - start_time) / 0x3B9ACA00;
+			basic_time = (double) (System.nanoTime() - start_time) / 0x3B9ACA00;
 
 			start_time = System.nanoTime();
 			for (int i = 0; i <= trials; i++)
@@ -59,7 +59,7 @@ public class DocumentBenchmarking
 				EfficientDocument test = new EfficientDocument(text);
 				test.getFleschScore();
 			}
-			efficient_time = (System.nanoTime() - start_time) / 0x3B9ACA00;
+			efficient_time = (double) (System.nanoTime() - start_time) / 0x3B9ACA00;
 
 			System.out.printf("%1$-15d\t%2$-10f\t%3$f%n", numToCheck, basic_time, efficient_time);
 		}
