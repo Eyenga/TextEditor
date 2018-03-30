@@ -7,23 +7,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-
 /**
- * A trie data structure that implements the Dictionary and the AutoComplete
- * ADT
- * 
- * @author 	Frank Eyenga
- * Created: September 28, 2017
- * Edited:	Mar 28, 2018
- *
- */
-public class AutoCompleteDictionaryTrie implements Dictionary, AutoComplete
+* A trie data structure that implements the Dictionary and the AutoComplete
+* ADT
+* 
+* @author 	Frank Eyenga
+* Created: September 28, 2017
+* Edited:	Mar 28, 2018
+*
+*/
+public class AutoCompleteMatchCase implements Dictionary, AutoComplete
 {
 
 	private TrieNode root;
 	private int size;
 
-	public AutoCompleteDictionaryTrie()
+	public AutoCompleteMatchCase()
 	{
 		root = new TrieNode();
 	}
