@@ -8,14 +8,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
-* A trie data structure that implements the Dictionary and the AutoComplete
-* ADT
-* 
-* @author 	Frank Eyenga
-* Created: September 28, 2017
-* Edited:	Mar 28, 2018
-*
-*/
+ * A trie data structure that implements the Dictionary and the AutoComplete ADT
+ * 
+ * @author Frank Eyenga Created: September 28, 2017 Edited: Mar 28, 2018
+ *
+ */
 public class AutoCompleteMatchCase implements Dictionary, AutoComplete
 {
 
@@ -42,7 +39,6 @@ public class AutoCompleteMatchCase implements Dictionary, AutoComplete
 	 */
 	public boolean addWord(String word)
 	{
-		word = word.toLowerCase();
 		TrieNode curr = root;
 
 		for (int i = 0; i < word.length(); i++)
@@ -60,7 +56,8 @@ public class AutoCompleteMatchCase implements Dictionary, AutoComplete
 			curr = next;
 		}
 
-		if (curr.endsWord()) return false;
+		if (curr.endsWord())
+			return false;
 
 		curr.setEndsWord(true);
 		size++;
@@ -84,8 +81,29 @@ public class AutoCompleteMatchCase implements Dictionary, AutoComplete
 	@Override
 	public boolean isWord(String s)
 	{
-		TrieNode word = findNode(root, s);
-		return (word == null) ? false : word.endsWord();
+		String sub;
+		char first;
+		int format;
+		if (size == 0 || s.length() < 2 || (format = checkCase(sub = s.substring(1))) == 0)
+			return false;
+
+		first = s.charAt(0);
+		if (format == 1)
+		{
+			if (Character.isLowerCase(first))
+				return false;
+
+			sub = sub.toLowerCase();
+		}
+
+		TrieNode word = findNode(root.getChild((char) (first | 0x20)), sub);
+
+		if (word == null || !word.endsWord())
+			word = findNode(root.getChild(first), sub);
+		else
+			return true;
+
+		return (word != null && word.endsWord());
 	}
 
 	/**
@@ -112,32 +130,72 @@ public class AutoCompleteMatchCase implements Dictionary, AutoComplete
 	@Override
 	public List<String> predictCompletions(String prefix, int numCompletions)
 	{
-		TrieNode prefix_node = findNode(root, prefix);
-		if(prefix_node == null) return new LinkedList<String>();
-		
-		List<String> 	completions = new LinkedList<String>();
-		List<TrieNode> 	node_queque = new LinkedList<TrieNode>();
-		List<String>	word_queque = new LinkedList<String>();
-		
-		node_queque.add(prefix_node);
-		word_queque.add(prefix);
-		
-		while(!node_queque.isEmpty() && completions.size() < numCompletions)
+		if (size == 0)
+			return new LinkedList<String>();
+
+		TrieNode lower_case = null, upper_case = null;
+
+		List<String> completions = new LinkedList<String>();
+		List<TrieNode> node_queque = new LinkedList<TrieNode>();
+		List<String> word_queque = new LinkedList<String>();
+
+		if (prefix.length() < 2)
+		{
+			lower_case = findNode(root, prefix);
+
+		} else
+		{
+			char first;
+			String sub = prefix.substring(1);
+			int format = checkCase(sub);
+
+			if (format == 0)
+				return completions;
+
+			if (format == 1)
+				sub = sub.toLowerCase();
+
+			first = prefix.charAt(0);
+
+			if (Character.isUpperCase(first))
+			{
+				upper_case = findNode(root, first + sub);
+				lower_case = findNode(root, (char) (first | 0x20) + sub);
+			} else
+				lower_case = findNode(root, first + sub);
+
+			prefix = first + sub;
+
+		}
+
+		if (lower_case != null)
+		{
+			node_queque.add(lower_case);
+			word_queque.add(prefix);
+		}
+
+		if (upper_case != null)
+		{
+			node_queque.add(upper_case);
+			word_queque.add(prefix);
+		}
+
+		while (!node_queque.isEmpty() && completions.size() < numCompletions)
 		{
 			TrieNode node = node_queque.remove(0);
 			String word = word_queque.remove(0);
-			
-			if(node.endsWord()) 
+
+			if (node.endsWord())
 				completions.add(word);
-			
+
 			for (char c : node.getValidNextCharacters())
 			{
 				node_queque.add(node.getChild(c));
 				word_queque.add(word + c);
 			}
-			
+
 		}
-		
+
 		return completions;
 	}
 
@@ -152,16 +210,44 @@ public class AutoCompleteMatchCase implements Dictionary, AutoComplete
 	 */
 	private TrieNode findNode(TrieNode root, String s)
 	{
-		s = s.toLowerCase();
 		TrieNode curr = root;
 
 		for (int i = 0; i < s.length(); i++)
 		{
+			if (curr == null)
+				return null;
+
 			curr = curr.getChild(s.charAt(i));
-			if (curr == null) return null;
 		}
 
 		return curr;
+	}
+
+	/**
+	 * Check whether all letters of the given string have the same case, i.e. if all
+	 * letters are capital or non-capital.
+	 * 
+	 * @param s
+	 *            a string that will be checked
+	 * @return
+	 *         <ul>
+	 *         <li>1 if ALL character are upper-case alphabetic letters.</li>
+	 *         <li>0 if characters do no have matching case.</li>
+	 *         <li>-1 if All characters are lower-case alphabetic letters.</li>
+	 *         </ul>
+	 */
+
+	private int checkCase(String s)
+	{
+		boolean isUpper = Character.isUpperCase(s.charAt(0));
+
+		for (int i = 1; i < s.length(); i++)
+		{
+			if (Character.isUpperCase(s.charAt(i)) != isUpper)
+				return 0;
+		}
+
+		return (isUpper) ? 1 : -1;
 	}
 
 	// For debugging
@@ -173,7 +259,8 @@ public class AutoCompleteMatchCase implements Dictionary, AutoComplete
 	/** Do a pre-order traversal from this node down */
 	public void printNode(TrieNode curr, String text)
 	{
-		if (curr == null) return;
+		if (curr == null)
+			return;
 
 		System.out.println(text);
 

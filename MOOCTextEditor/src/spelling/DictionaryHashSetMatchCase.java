@@ -42,16 +42,18 @@ public class DictionaryHashSetMatchCase implements Dictionary
 	@Override
 	public boolean isWord(String s)
 	{
+		if(dict.size() == 0 || s.length() < 2)
+			return false;
+		
 		char first = s.charAt(0);
 		boolean isUpper = Character.isUpperCase(s.charAt(1));
+		String sub;
 
 		for (int i = 2; i < s.length(); i++)
 		{
 			if (Character.isUpperCase(s.charAt(i)) != isUpper)
 				return false;
 		}
-
-		String sub;
 
 		if (isUpper)
 			sub = s.substring(1).toLowerCase();
