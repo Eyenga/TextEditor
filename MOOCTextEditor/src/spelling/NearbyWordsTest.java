@@ -153,10 +153,4 @@ public class NearbyWordsTest
 		assertTrue(results.contains("flat") && results.contains("late") && results.contains("fate"));
 	}
 
-	@Test
-	public void testSuggestions()
-	{
-		fail("Not yet implemented");
-	}
-
 }
